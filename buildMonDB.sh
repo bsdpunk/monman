@@ -17,13 +17,14 @@
 #      REVISION:  ---
 #===============================================================================
 
-set -o nounset                              # Treat unset variables as an error
-ggrep "Initiative +[0-9]" monman.txt > Monsters
+#set -o nounset                              # Treat unset variables as an error
+ggrep "Initiative +[0-9]" monman2.txt > Monsters
 #Had to delete this last line, it was output from grep about the file
-sed '$d' Monsters
+#gsed '$d' Monsters
 IFS=$'\n'
 n=0
 echo "["
+#exit
 for i in $(cat Monsters); do 
 echo "{"
     #echo $i;
@@ -54,6 +55,9 @@ echo "{"
     echo $i | ggrep -o 'Reflex [0-9]\+'| gsed 's/Reflex /"Reflex": "/' | gsed 's/$/",/'
     #Grab and Change Will
     echo $i | ggrep -o 'Will [0-9]\+'| gsed 's/Will /"Will": "/' | gsed 's/$/",/'
+    #Grab and Damage
+    COUNTER=1
+    echo $i | for b in $(ggrep -o '[0-9]d[0-9A-Za-z +]\+ damage'); do echo $b |  gsed "s/^/\"Damage $COUNTER\": \"/" | gsed 's/$/",/'; COUNTER=$[$COUNTER +1]; done ; 
     #Grab and Change Speed
     echo $i | ggrep -o 'Speed [0-9]\+'| gsed 's/Speed /"Speed": "/' | gsed 's/$/",/'
     #Other Abilities is a lot of information, again grab it all and remove any quotes
